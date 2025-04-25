@@ -24,10 +24,14 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 28
 
+    // ✅ REQUIRED for AGP compatibility with Flutter: add namespace
+    namespace 'name.avioli.unilinks'
+
     defaultConfig {
         minSdkVersion 16
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     lintOptions {
         disable 'InvalidPackage'
     }
