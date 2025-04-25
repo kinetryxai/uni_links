@@ -13,15 +13,13 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.PluginRegistry; // ✅ RESTORED
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
+/** UniLinksPlugin */
 public class UniLinksPlugin
         implements FlutterPlugin,
                    MethodChannel.MethodCallHandler,
                    EventChannel.StreamHandler,
-                   ActivityAware,
-                   PluginRegistry.NewIntentListener {
+                   ActivityAware {
 
     private static final String MESSAGES_CHANNEL = "uni_links/messages";
     private static final String EVENTS_CHANNEL = "uni_links/events";
@@ -76,31 +74,18 @@ public class UniLinksPlugin
         eventChannel.setStreamHandler(plugin);
     }
 
-    /** Plugin registration. */
-    @Deprecated
-    public static void registerWith(Registrar registrar) {
-        if (registrar.activity() == null) {
-            return;
-        }
-
-        final UniLinksPlugin instance = new UniLinksPlugin();
-        instance.context = registrar.context();
-        register(registrar.messenger(), instance);
-
-        instance.handleIntent(registrar.context(), registrar.activity().getIntent());
-        registrar.addNewIntentListener(instance);
+    @Override
+    public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+        // no-op
     }
 
     @Override
-    public void onDetachedFromEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {}
-
-    @Override
-    public void onListen(Object o, EventChannel.EventSink eventSink) {
-        changeReceiver = createChangeReceiver(eventSink);
+    public void onListen(Object arguments, EventChannel.EventSink events) {
+        changeReceiver = createChangeReceiver(events);
     }
 
     @Override
-    public void onCancel(Object o) {
+    public void onCancel(Object arguments) {
         changeReceiver = null;
     }
 
@@ -116,27 +101,22 @@ public class UniLinksPlugin
     }
 
     @Override
-    public boolean onNewIntent(Intent intent) {
-        this.handleIntent(context, intent);
-        return false;
+    public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+        handleIntent(context, binding.getActivity().getIntent());
     }
 
     @Override
-    public void onAttachedToActivity(@NonNull ActivityPluginBinding activityPluginBinding) {
-        activityPluginBinding.addOnNewIntentListener(this);
-        this.handleIntent(this.context, activityPluginBinding.getActivity().getIntent());
+    public void onDetachedFromActivityForConfigChanges() {
+        // no-op
     }
 
     @Override
-    public void onDetachedFromActivityForConfigChanges() {}
-
-    @Override
-    public void onReattachedToActivityForConfigChanges(
-            @NonNull ActivityPluginBinding activityPluginBinding) {
-        activityPluginBinding.addOnNewIntentListener(this);
-        this.handleIntent(this.context, activityPluginBinding.getActivity().getIntent());
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+        handleIntent(context, binding.getActivity().getIntent());
     }
 
     @Override
-    public void onDetachedFromActivity() {}
+    public void onDetachedFromActivity() {
+        // no-op
+    }
 }
