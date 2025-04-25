@@ -51,12 +51,7 @@ public class UniLinksPlugin
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                // NOTE: assuming intent.getAction() is Intent.ACTION_VIEW
-
-                // Log.v("uni_links", String.format("received action: %s", intent.getAction()));
-
                 String dataString = intent.getDataString();
-
                 if (dataString == null) {
                     events.error("UNAVAILABLE", "Link unavailable", null);
                 } else {
@@ -81,8 +76,8 @@ public class UniLinksPlugin
     }
 
     /** Plugin registration. */
-    public static void registerWith(@NonNull PluginRegistry.Registrar registrar) {
-        // Detect if we've been launched in background
+    @Deprecated
+    public static void registerWith(io.flutter.plugin.common.PluginRegistry.Registrar registrar) {
         if (registrar.activity() == null) {
             return;
         }
