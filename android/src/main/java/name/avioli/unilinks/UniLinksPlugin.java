@@ -13,14 +13,15 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.PluginRegistry; // ✅ RESTORED
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 public class UniLinksPlugin
         implements FlutterPlugin,
-                MethodChannel.MethodCallHandler,
-                EventChannel.StreamHandler,
-                ActivityAware,
-                PluginRegistry.NewIntentListener {
+                   MethodChannel.MethodCallHandler,
+                   EventChannel.StreamHandler,
+                   ActivityAware,
+                   PluginRegistry.NewIntentListener {
 
     private static final String MESSAGES_CHANNEL = "uni_links/messages";
     private static final String EVENTS_CHANNEL = "uni_links/events";
